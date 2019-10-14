@@ -1,0 +1,17 @@
+name: serverless-data-worker
+
+WebsocketDataWorker:
+  component: '@serverless/backend-socket'
+
+  provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev # Set the default stage used. Default is dev
+  region: us-west-2 # Overwrite the default region used. Default is us-east-1
+
+  inputs:
+    name: data-worker
+    description: WebSocket DataWorker processing Phront's data operations
+    region: us-west-2
+    code:
+      src: code
