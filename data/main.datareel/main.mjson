@@ -1,0 +1,16 @@
+{
+    "root": {
+        "prototype": "montage/data/service/data-service",
+        "values": {
+            "name": "MainDataService",
+            "isUniquing": true,
+            "childServices": [
+                {"@": "phrontDataService"}
+            ]
+        }
+    },
+
+    "phrontDataService": {
+        "object": "phront/data/main.datareel/phront-service.mjson"
+    }
+}
