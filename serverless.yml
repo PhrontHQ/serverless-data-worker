@@ -12,6 +12,18 @@ provider:
   region: us-west-2 # Overwrite the default region used. Default is us-east-1
   websocketsApiName: phront-data-worker
   websocketsApiRouteSelectionExpression: $request.body.action # custom routes are selected by the value of the action property in the body
+  environment:
+    APIG_ENDPOINT:
+      Fn::Join:
+        - ''
+        - - Ref: WebsocketsApi
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - ${self:custom.stage}
+    CONNECTIONS_TABLE:
+      Ref: ConnectionsTable
+
 
 functions:
   connect:

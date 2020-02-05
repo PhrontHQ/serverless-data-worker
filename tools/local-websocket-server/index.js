@@ -51,7 +51,7 @@ wss.on('connection', function connection(ws) {
             var mockContext,
             mockCallback;
     
-            operationCoordinator.handleEvent(
+            operationCoordinator.handleMessage(
                 {
                     requestContext: {
                         connectionId: uuid.generate()

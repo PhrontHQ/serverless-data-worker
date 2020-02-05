@@ -1,13 +1,16 @@
 'use strict';
 
-const AWS = require('aws-sdk')
+const AWS = require('aws-sdk');
+const globalGateway = new AWS.ApiGatewayManagementApi({
+  endpoint: process.env.APIG_ENDPOINT
+});
+
 var Montage = require('montage/montage');
 var PATH = require("path");
 // global.XMLHttpRequest = require('xhr2');
 var OperationCoordinatorPromise;
 
-// //From Montage
-// Load package
+//Load Montage and Phront dependencies 
 OperationCoordinatorPromise = Montage.loadPackage(PATH.join(__dirname, "."), {
   mainPackageLocation: PATH.join(__filename, ".")
 })
@@ -66,7 +69,7 @@ const model = {
   shapes: {}
 }
 
-AWS.ApiGatewayManagementApi = Service.defineService('apigatewaymanagementapi', ['2018-11-29'])
+AWS.ApiGatewayManagementApi = Service.defineService('apigatewaymanagementapi', ['2018-11-29']);
 Object.defineProperty(apiLoader.services['apigatewaymanagementapi'], '2018-11-29', {
   // eslint-disable-next-line
   get: function get() {
@@ -77,6 +80,14 @@ Object.defineProperty(apiLoader.services['apigatewaymanagementapi'], '2018-11-29
 })
 /* END ApiGatewayManagementApi injection */
 
+console.log("process.env.APIG_ENDPOINT is: "+process.env.APIG_ENDPOINT);
+const gateway = new AWS.ApiGatewayManagementApi({
+  apiVersion: '2018-11-29',
+  endpoint: process.env.APIG_ENDPOINT
+  convertResponseTypes: false
+});
+
+
 module.exports.connect = (event, context, cb) => {
   cb(null, {
     statusCode: 200,
@@ -85,6 +96,9 @@ module.exports.connect = (event, context, cb) => {
 };
 
 module.exports.disconnect = (event, context, cb) => {
+
+  //operationCoordinator.unregisterGatewaygatewayForgatewayId(gateway,event.requestContext.connectionId);
+
   cb(null, {
     statusCode: 200,
     body: 'Disconnected.'
@@ -92,28 +106,28 @@ module.exports.disconnect = (event, context, cb) => {
 };
 
 module.exports.default = async (event, context, cb) => {
-  // default function that just echos back the data to the client
-  const client = new AWS.ApiGatewayManagementApi({
-    apiVersion: '2018-11-29',
-    endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
-    convertResponseTypes: false
-  });
+  // default function that just echos back the data to the gateway
+  // const gateway = new AWS.ApiGatewayManagementApi({
+  //   apiVersion: '2018-11-29',
+  //   endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
+  //   convertResponseTypes: false
+  // });
 
   // console.log("EVENT: \n" + JSON.stringify(event));
   const operationCoordinator  = await OperationCoordinatorPromise;
 
-  operationCoordinator.handleEvent(event, context, cb, client);
+  operationCoordinator.handleMessage(event, context, cb, gateway);
 
   cb(null, {
     statusCode: 200,
     body: 'Sent.'
   });
-  // var serializedHandledOperation = await operationCoordinator.handleEvent(event, context, cb, client);
+  // var serializedHandledOperation = await operationCoordinator.handleMessage(event, context, cb, gateway);
 
   // //console.log("serializedHandledOperation: ",serializedHandledOperation);
   // try {
 
-  //     await client
+  //     await gateway
   //     .postToConnection({
   //       ConnectionId: event.requestContext.connectionId,
   //       Data: serializedHandledOperation
