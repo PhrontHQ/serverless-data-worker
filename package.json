@@ -18,9 +18,8 @@
   },
   "dependencies": {
     "montage": "github:marchant/montage#montage-19",
-    "phront-data": "github:phrontHQ/phront-data#master",
-    "serverless": "~1.53.0",
-    "sqlstring": "^2.3.1",
+    "phront": "github:phrontHQ/phront#master",
+    "serverless": "~1.57.0",
     "xhr2": "^0.2.0"
   },
   "devDependencies": {
@@ -37,7 +36,8 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "montage-testing": "git://github.com/montagejs/montage-testing.git#master",
     "mr": "github:montagejs/mr.git#master",
-    "open": "0.0.5"
+    "open": "0.0.5",
+    "serverless-offline": "^6.0.0-alpha.43"
   },
   "scripts": {
     "jsdoc": "jsdoc -c jsdoc.json",
