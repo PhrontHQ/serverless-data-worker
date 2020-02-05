@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk')
 var Montage = require('montage/montage');
 var PATH = require("path");
-global.XMLHttpRequest = require('xhr2');
+// global.XMLHttpRequest = require('xhr2');
 var OperationCoordinatorPromise;
 
 // //From Montage
@@ -12,64 +12,13 @@ OperationCoordinatorPromise = Montage.loadPackage(PATH.join(__dirname, "."), {
   mainPackageLocation: PATH.join(__filename, ".")
 })
 .then(function (mr) {
-  return mr.async('phront-data/data/main.datareel/service/operation-coordinator');
+  return mr.async('phront/data/main.datareel/service/operation-coordinator');
 })
 .then(function (module) {
   global.OperationCoordinator = module.OperationCoordinator;
-  console.log("mr.then -> OperationCoordinator is ",global.OperationCoordinator);
+  console.log("OperationCoordinator ready");
   return new module.OperationCoordinator;
-  /*
-  var event = {
-    body:"{\"time\":1573629491196,\"creationIndex\":0,\"type\":{\"isRead\":true},\"objectDescriptor\":\"data/main.datareel/model/collection\",\"id\":\"2CDAFBED-F0F0-429A-800D-67472E10AEF2\"}"
-  };
-
-  var operation = JSON.parse(event.body),
-  objectDescriptorModuleId = operation.objectDescriptor,
-  objectDescriptor = global.PhrontService.objectDescriptorForObjectDescriptorModuleId(objectDescriptorModuleId);
-  
-
-  operation.objectDescriptor = objectDescriptor;
-
-  global.PhrontService.handleReadOperation(operation) 
-  .then(function(readUpdatedOperation) {
-    console.log("readUpdatedOperation",readUpdatedOperation);
-    var records = readUpdatedOperation.data;
-    readUpdatedOperation.referrerId = operation.id;
-
-  });
-*/
-
 });
-
-
-async function processEvent(event, context) {
-    /*
-    "{"time":1573623761704,"creationIndex":0,"type":{"isRead":true},"objectDescriptor":"data/main.datareel/model/collection","id":"3B3E5193-009A-4BFE-97BF-0290536E24D9"}"
-    */
-
-  const operationCoordinator  = await OperationCoordinatorPromise;
-  var operation = JSON.parse(event.body),
-  objectDescriptorModuleId = operation.objectDescriptor,
-  objectDescriptor = phrontService.objectDescriptorWithModuleId(objectDescriptorModuleId);
-  
-  operation.objectDescriptor = objectDescriptor;
-
-  console.log("objectDescriptor is ",objectDescriptor);
-  console.log("operation is ",operation);
-
-
-  return phrontService.handleReadOperation(operation) 
-  .then(function(readUpdatedOperation) {
-    var records = readUpdatedOperation.data;
-    console.log("readUpdatedOperation",readUpdatedOperation,records);
-    //Having the whole objectDescriptor here creates a circular issue using simple JSON.stringify
-    readUpdatedOperation.objectDescriptor = readUpdatedOperation.objectDescriptor.module.id;
-
-    readUpdatedOperation.referrer = operation.id;
-    return readUpdatedOperation;
-  });
-}
-
 
 // the following section injects the new ApiGatewayManagementApi service
 // into the Lambda AWS SDK, otherwise you'll have to deploy the entire new version of the SDK
@@ -146,25 +95,45 @@ module.exports.default = async (event, context, cb) => {
   // default function that just echos back the data to the client
   const client = new AWS.ApiGatewayManagementApi({
     apiVersion: '2018-11-29',
-    endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`
+    endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
+    convertResponseTypes: false
   });
 
   // console.log("EVENT: \n" + JSON.stringify(event));
-  const operationCoordinator  = await OperationCoordinatorPromise
-  var serializedHandledOperation = await operationCoordinator.handleEvent(event, context);
+  const operationCoordinator  = await OperationCoordinatorPromise;
 
-  //console.log("readUpdatedOperation: ",readUpdatedOperation);
-  await client
-  .postToConnection({
-    ConnectionId: event.requestContext.connectionId,
-    Data: serializedHandledOperation
-  })
-  .promise();
+  operationCoordinator.handleEvent(event, context, cb, client);
 
   cb(null, {
     statusCode: 200,
     body: 'Sent.'
   });
+  // var serializedHandledOperation = await operationCoordinator.handleEvent(event, context, cb, client);
+
+  // //console.log("serializedHandledOperation: ",serializedHandledOperation);
+  // try {
+
+  //     await client
+  //     .postToConnection({
+  //       ConnectionId: event.requestContext.connectionId,
+  //       Data: serializedHandledOperation
+  //     })
+  //     .promise()
+  //     .then(function(resolved) {
+  //       console.log(resolved);
+  //     },function(rejected) {
+  //       console.log(rejected);
+  //     });
+
+  //     //console.log("postToConnection done. ");
+
+  //     cb(null, {
+  //       statusCode: 200,
+  //       body: 'Sent.'
+  //     });
+  // } catch (e) {
+  //   console.error("Caught Error: ",e," e.statusCode is:"+e.statusCode );
+  // }
 
 
 };
