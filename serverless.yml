@@ -1,17 +1,33 @@
-name: serverless-data-worker
+service: phront-data-worker
 
-WebsocketDataWorker:
-  component: '@serverless/backend-socket'
+plugins:
+  - serverless-offline
 
-  provider:
+provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs10.x
   stage: dev # Set the default stage used. Default is dev
+  profile: phront-code
+  role: arn:aws:iam::537014313177:role/phront-data-service
   region: us-west-2 # Overwrite the default region used. Default is us-east-1
+  websocketsApiName: phront-data-worker
+  websocketsApiRouteSelectionExpression: $request.body.action # custom routes are selected by the value of the action property in the body
 
-  inputs:
-    name: data-worker
-    description: WebSocket DataWorker processing Phront's data operations
-    region: us-west-2
-    code:
-      src: code
+functions:
+  connect:
+    handler: handler.connect
+    events:
+      - websocket:
+          route: $connect # authorizers are only for connect routes
+          # authorizer:
+          #   name: auth
+          #   identitySource:
+          #     - 'route.request.header.Auth'
+  default:
+    handler: handler.default
+    events:
+      - websocket:
+          route: $default
+
+  # auth:
+  #   handler: handler.auth
