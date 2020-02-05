@@ -1,8 +1,13 @@
+org: benoitmarchant
+app: serverless-data-worker
 service: phront-data-worker
 
 plugins:
   - serverless-offline
 
+custom:
+  stage: ${opt:stage, 'dev'}
+  
 provider:
   name: aws
   runtime: nodejs10.x
