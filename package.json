@@ -19,7 +19,7 @@
   "dependencies": {
     "montage": "github:marchant/montage#montage-19",
     "phront": "github:phrontHQ/phront#master",
-    "serverless": "~1.57.0",
+    "serverless": "~1.63.0",
     "xhr2": "^0.2.0"
   },
   "devDependencies": {
