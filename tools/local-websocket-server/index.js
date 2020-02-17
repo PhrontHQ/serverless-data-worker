@@ -14,7 +14,7 @@ OperationCoordinatorPromise = Montage.loadPackage(PATH.join(__dirname, "."), {
 })
 .then(function (module) {
     global.OperationCoordinator = module.OperationCoordinator;
-    console.log("OperationCoordinator ready");
+    // console.log("OperationCoordinator ready");
     return new module.OperationCoordinator;
 });
 
