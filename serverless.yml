@@ -2,6 +2,10 @@ org: benoitmarchant
 app: serverless-data-worker
 service: phront-data-worker
 
+package:
+    exclude:
+        - tools/**
+
 plugins:
   - serverless-offline
 
@@ -14,6 +18,7 @@ provider:
   stage: dev # Set the default stage used. Default is dev
   profile: phront-code
   role: arn:aws:iam::537014313177:role/phront-data-service
+  cfnRole: arn:aws:iam::537014313177:role/cloudphront-data-service # ARN of an IAM role for CloudFormation service. If specified, CloudFormation uses the role's credentials
   region: us-west-2 # Overwrite the default region used. Default is us-east-1
   websocketsApiName: phront-data-worker
   websocketsApiRouteSelectionExpression: $request.body.action # custom routes are selected by the value of the action property in the body
@@ -26,9 +31,8 @@ provider:
           - Ref: AWS::Region
           - .amazonaws.com/
           - ${self:custom.stage}
-    CONNECTIONS_TABLE:
-      Ref: ConnectionsTable
-
+    # CONNECTIONS_TABLE:
+    #   Ref: ConnectionsTable
 
 functions:
   connect:
