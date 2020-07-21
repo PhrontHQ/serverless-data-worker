@@ -1,16 +1,26 @@
-org: benoitmarchant
+# Removes serveless enterprise plugin injection
+# org: benoitmarchant
 app: serverless-data-worker
 service: phront-data-worker
 
 package:
     exclude:
-        - tools/**
+      - ~/**
+      - tools/**
+      - .vscode/**
+      - node_modules/montage/demo/**
+      - node_modules/montage/ui/**
+      - node_modules/montage/test/**
+      - node_modules/montage/testing/**
+      - node_modules/montage/tools/**
+      - node_modules/phront/test/**
+      - node_modules/phront/sandbox/**
 
 plugins:
   - serverless-offline
 
 custom:
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'prod'}
   
 provider:
   name: aws
