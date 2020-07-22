@@ -1,13 +1,12 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const globalGateway = new AWS.ApiGatewayManagementApi({
-  endpoint: process.env.APIG_ENDPOINT
-});
+// const globalGateway = new AWS.ApiGatewayManagementApi({
+//   endpoint: process.env.APIG_ENDPOINT
+// });
 
 var Montage = require('montage/montage');
 var PATH = require("path");
-// global.XMLHttpRequest = require('xhr2');
 var OperationCoordinatorPromise;
 
 //Load Montage and Phront dependencies 
@@ -77,13 +76,13 @@ Object.defineProperty(apiLoader.services['apigatewaymanagementapi'], '2018-11-29
   },
   enumerable: true,
   configurable: true
-})
+});
 /* END ApiGatewayManagementApi injection */
 
-console.log("process.env.APIG_ENDPOINT is: "+process.env.APIG_ENDPOINT);
-const gateway = new AWS.ApiGatewayManagementApi({
+
+const sharedGateway = new AWS.ApiGatewayManagementApi({
   apiVersion: '2018-11-29',
-  endpoint: process.env.APIG_ENDPOINT
+  endpoint: process.env.APIG_ENDPOINT,
   convertResponseTypes: false
 });
 
@@ -107,16 +106,20 @@ module.exports.disconnect = (event, context, cb) => {
 
 module.exports.default = async (event, context, cb) => {
   // default function that just echos back the data to the gateway
-  // const gateway = new AWS.ApiGatewayManagementApi({
-  //   apiVersion: '2018-11-29',
-  //   endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
-  //   convertResponseTypes: false
-  // });
+  const gateway = new AWS.ApiGatewayManagementApi({
+    apiVersion: '2018-11-29',
+    endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
+    convertResponseTypes: false
+  });
 
-  // console.log("EVENT: \n" + JSON.stringify(event));
+  console.log("default() EVENT: \n" + JSON.stringify(event));
+
+  console.log("sharedGateway endpoint is:", process.env.APIG_ENDPOINT);
+  console.log("localGateway endpoint is:", `https://${event.requestContext.domainName}/${event.requestContext.stage}`);
+
   const operationCoordinator  = await OperationCoordinatorPromise;
 
-  operationCoordinator.handleMessage(event, context, cb, gateway);
+  await operationCoordinator.handleMessage(event, context, cb, gateway);
 
   cb(null, {
     statusCode: 200,
