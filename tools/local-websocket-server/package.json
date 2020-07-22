@@ -19,11 +19,10 @@
   "dependencies": {
     "montage": "github:marchant/montage#montage-19",
     "phront": "github:phrontHQ/phront#master",
-    "ws": "~7.2.1",
-    "xhr2": "^0.2.0"
+    "aws-sdk": "^2.716.0",
+    "ws": "~7.2.3"
   },
   "devDependencies": {
-    "aws-sdk": "^2.546.0",
     "concurrently": "^3.4.0",
     "http-server": "^0.9.0",
     "jasmine-console-reporter": "^1.2.7",
@@ -35,7 +34,6 @@
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "montage-testing": "git://github.com/montagejs/montage-testing.git#master",
-    "mr": "github:montagejs/mr.git#master",
     "open": "0.0.5",
     "serverless-offline": "^6.0.0-alpha.43"
   },

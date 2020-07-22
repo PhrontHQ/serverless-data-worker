@@ -11,6 +11,10 @@
     },
 
     "phrontDataService": {
-        "object": "phront/data/main.datareel/phront-service.mjson"
+        "object": "phront/data/main.datareel/phront-service.mjson",
+        "values": {
+            "childServices": [
+            ]
+        }
     }
 }

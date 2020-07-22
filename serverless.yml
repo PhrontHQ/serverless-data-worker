@@ -25,7 +25,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs10.x
-  stage: dev # Set the default stage used. Default is dev
+  stage: prod # Set the default stage used. Default is dev
   profile: phront-code
   role: arn:aws:iam::537014313177:role/phront-data-service
   cfnRole: arn:aws:iam::537014313177:role/cloudphront-data-service # ARN of an IAM role for CloudFormation service. If specified, CloudFormation uses the role's credentials

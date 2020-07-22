@@ -106,20 +106,20 @@ module.exports.disconnect = (event, context, cb) => {
 
 module.exports.default = async (event, context, cb) => {
   // default function that just echos back the data to the gateway
-  const gateway = new AWS.ApiGatewayManagementApi({
-    apiVersion: '2018-11-29',
-    endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
-    convertResponseTypes: false
-  });
+  // const gateway = new AWS.ApiGatewayManagementApi({
+  //   apiVersion: '2018-11-29',
+  //   endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
+  //   convertResponseTypes: false
+  // });
 
-  console.log("default() EVENT: \n" + JSON.stringify(event));
+  //console.log("default() EVENT: \n" + JSON.stringify(event));
 
-  console.log("sharedGateway endpoint is:", process.env.APIG_ENDPOINT);
-  console.log("localGateway endpoint is:", `https://${event.requestContext.domainName}/${event.requestContext.stage}`);
+  // console.log("sharedGateway endpoint is:", process.env.APIG_ENDPOINT);
+  // console.log("localGateway endpoint is:", `https://${event.requestContext.domainName}/${event.requestContext.stage}`);
 
   const operationCoordinator  = await OperationCoordinatorPromise;
 
-  await operationCoordinator.handleMessage(event, context, cb, gateway);
+  await operationCoordinator.handleMessage(event, context, cb, sharedGateway);
 
   cb(null, {
     statusCode: 200,

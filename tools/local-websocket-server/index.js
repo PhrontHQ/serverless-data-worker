@@ -18,7 +18,7 @@ OperationCoordinatorPromise = Montage.loadPackage(PATH.join(__dirname, "."), {
     return new module.OperationCoordinator;
 });
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 7272 });
 
 wss.on('connection', function connection(ws) {
     var mockGateway =  {
