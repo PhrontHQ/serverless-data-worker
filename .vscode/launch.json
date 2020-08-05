@@ -8,8 +8,9 @@
         "type": "node",
         "request": "launch",
         "name": "Launch local-websocket-server",
-        "runtimeVersion": "12.16.1",
+        "runtimeVersion": "12.18.2",
         "program": "${workspaceFolder}/tools/local-websocket-server/index.js",
+        "trace": false,
         "skipFiles": [
             "<node_internals>/**"
         ]
