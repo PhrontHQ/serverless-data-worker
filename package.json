@@ -35,6 +35,7 @@
     "montage-testing": "git://github.com/montagejs/montage-testing.git#master",
     "open": "0.0.5",
     "serverless": "~1.75.0",
+    "local-websocket-server": "github:phrontHQ/local-websocket-server#master",
     "serverless-offline": "^6.1.3"
   },
   "scripts": {
